@@ -1,0 +1,22 @@
+cmake_minimum_required(VERSION 3.10)
+
+project(GitHubActivity)
+
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+add_executable(GitHubActivity
+    src/main.cpp
+    src/GitHubAPI.cpp
+    src/JsonParser.cpp
+)
+
+target_include_directories(GitHubActivity
+    PRIVATE
+    include
+)
+
+target_link_libraries(GitHubActivity
+    PRIVATE
+    winhttp
+)
