@@ -9,6 +9,7 @@ add_executable(GitHubActivity
     src/main.cpp
     src/GitHubAPI.cpp
     src/JsonParser.cpp
+    src/DateTime.cpp
 )
 
 target_include_directories(GitHubActivity

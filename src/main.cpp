@@ -2,23 +2,29 @@
 #include <iostream>
 #include <vector>
 
-int main(int argc, char* argv[]) {
+int main() {
 
-    if (argc != 2) {
-        std::cout << "Usage: github-activity <username>" << std::endl;
-        return 1;
-    }
+    while (true) {
 
-    std::string username = argv[1];
+        std::string username;
 
-    GitHubAPI api;
+        std::cout << "\nEnter GitHub Username (or 'exit' to quit): ";
+        std::cin >> username;
 
-    try {
+        if (username == "exit") {
+            break;
+        }
+
+        GitHubAPI api;
+
+        try {
         std::vector<Activity> activities = api.getUserActivity(username);
 
         if (activities.empty()) {
+
             std::cout << "No activity found." << std::endl;
-            return 0;
+
+            continue;
         }
 
         for (const Activity& activity : activities) {
@@ -31,7 +37,7 @@ int main(int argc, char* argv[]) {
 
             }
 
-            std::cout << " to " << activity.description << std::endl;
+            std::cout << " to " << activity.description << " [" << activity.createdAt << "]" << std::endl;
 
         }
 
@@ -40,9 +46,9 @@ int main(int argc, char* argv[]) {
     catch (const std::exception& error) {
 
             std::cout << "Error: " << error.what() << std::endl;
-            return 1;
 
         }
+    }
 
     return 0;
 }

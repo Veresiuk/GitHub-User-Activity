@@ -1,4 +1,5 @@
 #include "JsonParser.h"
+#include <iostream>
 
 std::vector<Activity> JsonParser::parseActivity(const std::string& data) {
     std::vector<Activity> result;
@@ -52,6 +53,30 @@ std::vector<Activity> JsonParser::parseActivity(const std::string& data) {
 
     std::string repoName = data.substr(nameStart + 1, nameEnd - nameStart - 1);
 
+    size_t datePosition = data.find("\"created_at\"", end);
+
+    if (datePosition == std::string::npos) {
+        break;
+    }
+
+    size_t dateStart = data.find("\"", datePosition + 13);
+
+    if (dateStart == std::string::npos) {
+        break;
+
+    }
+
+    size_t dateEnd = data.find("\"", dateStart + 1);
+
+    if (dateEnd == std::string::npos) {
+        break;
+
+    }
+
+    std::string createAt = data.substr(dateStart + 1, dateEnd - dateStart - 1);
+
+    std::cout << "DEBUG DATE: " << createAt << std::endl;
+
     int commits = 0;
     if (type == "PushEvent") {
 
@@ -79,38 +104,41 @@ std::vector<Activity> JsonParser::parseActivity(const std::string& data) {
 
     std::string action;
 
-    if (type == "PushEvent") {
+    switch (type[0]) {
+
+    case 'P':
         action = "Pushed";
-    }
-    else if (type == "WatchEvent") {
+        break;
+
+    case 'W':
         action = "Starred";
-    }
-    else if (type == "IssuesEvent") {
-        action = "Opened an issue";
-    }
-    else if (type == "IssueCommentEvent"){
-        action = "Commented on an issue";
-    }
-    else if (type == "PullRequestEvent") {
+        break;
+
+    case 'I':
+        action = type == "IssuesEvent"
+            ? "Opened an issue"
+            : "Commented on an issue";
+        break;
+
+    case 'R':
         action = "Created a pull request";
-    }
-    else if (type == "CreateEvent") {
+        break;
+
+    case 'C':
         action = "Created";
-    }
-    else if (type == "DeleteEvent") {
+        break;
+
+    case 'D':
         action = "Deleted";
-    }
-    else if (type == "ForkEvent") {
+        break;
+
+    case 'F':
         action = "Forked a repository";
-    }
-    else if (type == "ReleaseEvent") {
-        action = "Published a release";
-    }
-    else if (type == "PublicEvent") {
-        action = "Made a repository public";
-    }
-    else {
+        break;
+
+    default:
         action = "Unknown action";
+
     }
     
     Activity activity;
@@ -118,6 +146,7 @@ std::vector<Activity> JsonParser::parseActivity(const std::string& data) {
     activity.description = repoName;
     activity.action = action;
     activity.commits = commits;
+    activity.createdAt = createAt;
 
     result.push_back(activity);
 
