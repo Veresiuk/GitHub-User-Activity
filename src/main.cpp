@@ -33,7 +33,14 @@ int main() {
 
             if (activity.commits > 0) {
 
-                std::cout << " " << activity.commits << " commits";
+                std::cout << " " << activity.commits;
+
+                if (activity.commits == 1) {
+                    std::cout << " commit";
+                }
+                else {
+                    std::cout << " commit";
+                }
 
             }
 

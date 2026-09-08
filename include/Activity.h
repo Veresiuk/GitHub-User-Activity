@@ -8,6 +8,10 @@ struct Activity {
     std::string description;
     std::string action;
     std::string createdAt;
+
+    std::string before;
+    std::string head;
+    
     int commits;
 
 };
